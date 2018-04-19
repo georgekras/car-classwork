@@ -11,16 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import by.htp.carparking.dao.DAO;
 import by.htp.carparking.domain.Car;
-import by.htp.carparking.service.CarService;
 import by.htp.carparking.service.OrderService;
-import by.htp.carparking.service.impl.OrderServiceImpl;
 import by.htp.carparking.web.action.BaseAction;
 
 public class OrderCarAction implements BaseAction {
 
-	// TODO to IoC
 	private OrderService orderService;
-	private CarService carService;
 
 	public OrderCarAction() {
 	}
