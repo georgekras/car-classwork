@@ -35,17 +35,15 @@ public class OrderCarAction implements BaseAction {
 		String car_id = request.getParameter(REQUEST_PARAM_CAR_ID);
 		String user_id = request.getParameter(REQUEST_PARAM_USER_ID);
 		validateRequestParamNotNull(car_id, user_id);
+		String dateStart = request.getParameter(REQUEST_PARAM_START_DATE);
+		String dateEnd = request.getParameter(REQUEST_PARAM_END_DATE);
 		Car orderCar = DAO.getDAO().carDAO.read(formatString(car_id));
 		if (orderCar != null) {
 			request.setAttribute(REQUEST_PARAM_ORDERED_CAR, orderCar);
-			String dateStart = request.getParameter("start");
-			String dateEnd = request.getParameter("end");
 			if (dateStart != null && dateEnd != null) {
 				orderService.orderCar(formatString(user_id), formatString(car_id),
 						Date.valueOf(request.getParameter("start")), Date.valueOf(request.getParameter("end")));
-				StringBuilder orderedCarMessage = new StringBuilder();
-				orderedCarMessage.append(orderCar.getBrand()).append(" ").append(orderCar.getModel())
-						.append(" was ordered succesfully");
+				String orderedCarMessage = "Car was ordered successfully";
 				request.setAttribute(REQUEST_PARAM_MSG_ORDER_CAR_SUCCESS, orderedCarMessage);
 			}
 		}

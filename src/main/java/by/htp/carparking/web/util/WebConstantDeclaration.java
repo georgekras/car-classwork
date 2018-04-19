@@ -18,6 +18,8 @@ public final class WebConstantDeclaration {
 	
 	public static final String REQUEST_PARAM_USER_ID = "user_id";
 	public static final String REQUEST_PARAM_CAR_ID = "car_id";
+	public static final String REQUEST_PARAM_START_DATE = "start";
+	public static final String REQUEST_PARAM_END_DATE = "end";
 	
 	public static final String REQUEST_MSG_SUCCESS = "msg_success";
 	

@@ -54,7 +54,8 @@ public class CarDaoDBImpl implements CarDao {
 			ResultSet rs = ps.executeQuery();
 			if (rs.next())
 				return new Car(rs.getInt("ID"), rs.getString("Brand"), rs.getString("Model"));
-			else throw new IllegalArgumentException();
+			else
+				throw new IllegalArgumentException();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -62,22 +63,27 @@ public class CarDaoDBImpl implements CarDao {
 	}
 
 	@Override
-	public List<Car> readAll(){
+	public List<Car> readAll() {
 		List<Car> list = new ArrayList<>();
 		Connection connection = DBConnectionHelper.connect();
 		Statement statement;
 		try {
 			statement = connection.createStatement();
 
-		String sql = "SELECT * from car ;";
-		ResultSet rs = statement.executeQuery(sql);
-		while (rs.next()) {
-			Car car = new Car(rs.getInt("ID"), rs.getString("Brand"), rs.getString("Model"));
-			list.add(car);
-		}
+			String sql = "SELECT * from car ;";
+			ResultSet rs = statement.executeQuery(sql);
+			while (rs.next()) {
+				Car car = new Car(rs.getInt("ID"), rs.getString("Brand"), rs.getString("Model"));
+				list.add(car);
+			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return list;
 
