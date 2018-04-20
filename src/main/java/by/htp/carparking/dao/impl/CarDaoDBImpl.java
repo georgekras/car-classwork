@@ -8,11 +8,18 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.htp.carparking.dao.CarDao;
 import by.htp.carparking.dao.util.DBConnectionHelper;
 import by.htp.carparking.domain.Car;
 
 public class CarDaoDBImpl implements CarDao {
+
+	private static final Logger logger = LogManager.getLogger();
+
+	String readAllSql = "SELECT * from car ;";
 
 	public CarDaoDBImpl() {
 
@@ -22,24 +29,21 @@ public class CarDaoDBImpl implements CarDao {
 	public void create(Car entity) {
 
 		Connection conn = DBConnectionHelper.connect();
-
 		PreparedStatement ps = null;
 		try {
-			ps = conn.prepareStatement("INSERT INTO car (brand, model) VALUES (?,?)");
-
+			ps = conn.prepareStatement("INSERT INTO car (Brand, Model) VALUES (?,?)");
 			ps.setString(1, "brand1");
 			ps.setString(2, "model1");
-
 			ps.executeUpdate();
-
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Exceprion", e);
 		} finally {
 			if (ps != null) {
 				try {
+					conn.close();
 					ps.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					logger.error("Exceprion", e);
 				}
 			}
 		}
@@ -48,8 +52,10 @@ public class CarDaoDBImpl implements CarDao {
 
 	@Override
 	public Car read(int id) {
-		try (Connection connection = DBConnectionHelper.connect()) {
-			PreparedStatement ps = connection.prepareStatement("SELECT * FROM `car` WHERE id=?");
+		Connection conn = DBConnectionHelper.connect();
+		PreparedStatement ps = null;
+		try {
+			ps = conn.prepareStatement("SELECT * FROM `car` WHERE id=?");
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next())
@@ -57,7 +63,16 @@ public class CarDaoDBImpl implements CarDao {
 			else
 				throw new IllegalArgumentException();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Exceprion", e);
+		} finally {
+			if (ps != null) {
+				try {
+					conn.close();
+					ps.close();
+				} catch (SQLException e) {
+					logger.error("Exceprion", e);
+				}
+			}
 		}
 		return null;
 	}
@@ -65,24 +80,22 @@ public class CarDaoDBImpl implements CarDao {
 	@Override
 	public List<Car> readAll() {
 		List<Car> list = new ArrayList<>();
-		Connection connection = DBConnectionHelper.connect();
+		Connection conn = DBConnectionHelper.connect();
 		Statement statement;
 		try {
-			statement = connection.createStatement();
-
-			String sql = "SELECT * from car ;";
-			ResultSet rs = statement.executeQuery(sql);
+			statement = conn.createStatement();
+			ResultSet rs = statement.executeQuery(readAllSql);
 			while (rs.next()) {
 				Car car = new Car(rs.getInt("ID"), rs.getString("Brand"), rs.getString("Model"));
 				list.add(car);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("Exceprion", e);
 		} finally {
 			try {
-				connection.close();
+				conn.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				logger.error("Exceprion", e);
 			}
 		}
 		return list;

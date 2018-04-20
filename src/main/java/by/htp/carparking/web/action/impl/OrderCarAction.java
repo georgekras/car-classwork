@@ -16,6 +16,8 @@ import by.htp.carparking.web.action.BaseAction;
 
 public class OrderCarAction implements BaseAction {
 
+	String orderedCarMessage = "Car was ordered successfully";
+	
 	private OrderService orderService;
 
 	public OrderCarAction() {
@@ -43,7 +45,6 @@ public class OrderCarAction implements BaseAction {
 			if (dateStart != null && dateEnd != null) {
 				orderService.orderCar(formatString(user_id), formatString(car_id),
 						Date.valueOf(request.getParameter("start")), Date.valueOf(request.getParameter("end")));
-				String orderedCarMessage = "Car was ordered successfully";
 				request.setAttribute(REQUEST_PARAM_MSG_ORDER_CAR_SUCCESS, orderedCarMessage);
 			}
 		}

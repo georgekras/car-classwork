@@ -16,9 +16,9 @@ import org.apache.logging.log4j.Logger;
 public class OrderDaoDBImpl implements OrderDao {
 
 	private static final Logger logger = LogManager.getLogger();
-	
+
 	public OrderDaoDBImpl() {
-		
+
 	}
 
 	@Override
@@ -52,12 +52,13 @@ public class OrderDaoDBImpl implements OrderDao {
 	}
 
 	@Override
-	public void insertNewOrder(int userId, int carId,Date dateStart, Date dateEnd) {
+	public void insertNewOrder(int userId, int carId, Date dateStart, Date dateEnd) {
 
 		Connection conn = DBConnectionHelper.connect();
-
-		try (PreparedStatement ps = conn.prepareStatement("INSERT INTO orders (user_id, car_id, dateStart, dateEnd) VALUES (?,?,?,?)")) {
-
+		PreparedStatement ps = null;
+		try {
+			ps = conn
+					.prepareStatement("INSERT INTO orders (user_id, car_id, dateStart, dateEnd) VALUES (?,?,?,?)");
 			ps.setInt(1, userId);
 			ps.setInt(2, carId);
 			ps.setDate(3, dateStart);
@@ -67,6 +68,17 @@ public class OrderDaoDBImpl implements OrderDao {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			logger.error("Exceprion", e);
+		} finally {
+			if (ps != null) {
+				try {
+					conn.close();
+					ps.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					logger.error("Exceprion", e);
+				}
+			}
 		}
 
 	}
